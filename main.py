@@ -24,7 +24,8 @@ def parse(url):
             result = pickle.load(f)
     except:
         pass
-
+    print(len(result))
+    print(result)
     # Setup Chrome options
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")  # Ensure GUI is off
