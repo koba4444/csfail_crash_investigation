@@ -28,7 +28,7 @@ def parse(url):
     print(result)
     # Setup Chrome options
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")  # Ensure GUI is off
+    #options.add_argument("--headless")  # Ensure GUI is off
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
