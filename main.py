@@ -4,7 +4,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from collections import defaultdict
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import pickle
@@ -31,6 +30,14 @@ def parse(url):
     #options.add_argument("--headless")  # Ensure GUI is off
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--remote-debugging-port=9222")
+    options.add_argument("start-url=about:blank")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-gpu")
+    options.add_argument("executable_path=/home/kok4444/Study/chromedriver")
+    options.add_argument("--log-path=chromedriver.log")
+
+
 
     # Set path to chromedriver as per your configuration
     webdriver_service = Service(ChromeDriverManager().install())
