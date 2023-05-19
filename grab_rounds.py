@@ -20,8 +20,8 @@ def parse(url):
 
     """
     column_names = ["Round", "Stake", "Win", "Ratio"]
-    df = pd.DataFrame(columns=column_names)
-    result = pd.DataFrame()
+    result = pd.DataFrame(columns=column_names)
+    #result = pd.DataFrame()
     last_round_id = 3920000
     current_session_ids = []
     # Open the file in binary read mode
@@ -110,7 +110,7 @@ def parse(url):
                 scroll_position_previous = scroll_position
                 scroll_position = driver.execute_script("return arguments[0].scrollTop;", rounds)
                 time.sleep(2)
-                print(f"round {id} scroll {count}: {scroll_position_previous} <> {scroll_position}")
+                #print(f"round {id} scroll {count}: {scroll_position_previous} <> {scroll_position}")
                 count += 1
                 if stop_procedure:
                     driver.quit()
@@ -118,6 +118,9 @@ def parse(url):
 
                 tokens = t.split("\n")
                 prev_ind = 0
+                for ind, val in enumerate(tokens):
+                    if val == "+1":
+                        tokens.pop(ind)
                 for ind, val in enumerate(tokens):
                     if val[0] == "X":
                         rec_dict = {}
@@ -134,6 +137,7 @@ def parse(url):
             try:
                 with open('./csfail_rounds.pkl', 'wb') as f:
                     pickle.dump(result, f)
+                    print(f"round {id} recorded")
             except:
                 pass
     finally:
