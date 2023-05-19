@@ -35,7 +35,7 @@ def parse(url):
     id = int(last_round_id)
     # Setup Chrome options
     options = webdriver.ChromeOptions()
-    #options.add_argument("--headless")  # Ensure GUI is off
+    options.add_argument("--headless")  # Ensure GUI is off
     options.add_argument("window-size=1200x600")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")

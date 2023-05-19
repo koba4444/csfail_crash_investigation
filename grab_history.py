@@ -29,7 +29,7 @@ def parse(url):
 
     # Setup Chrome options
     options = webdriver.ChromeOptions()
-    #options.add_argument("--headless")  # Ensure GUI is off
+    options.add_argument("--headless")  # Ensure GUI is off
     options.add_argument("window-size=1200x600")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
@@ -75,7 +75,7 @@ def parse(url):
                 break   # break for loop
 
 
-            if len(t) > 13 and t[:13] == "Authorization":
+            if len(t) > 100:
                 tokens = t.split("\n")
                 last_recorded_round = 0
                 for ind, val in enumerate(tokens):
@@ -99,6 +99,7 @@ def parse(url):
                         pickle.dump(result, f)
                         print(f"time: {datetime.now()}. Statistics history till round {last_recorded_round} recorded")
                         time.sleep(300)
+                        driver.refresh()
                 except:
                     pass
 
