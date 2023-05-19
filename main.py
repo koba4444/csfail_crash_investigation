@@ -1,5 +1,7 @@
 from datetime import datetime
 import time
+
+from selenium.webdriver import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from collections import defaultdict
 from selenium import webdriver
@@ -7,6 +9,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import pickle
+import pandas as pd
 
 def parse(url):
     """
@@ -46,6 +49,7 @@ def parse(url):
 
     # Navigate to the website
     driver.get(url)
+    time.sleep(5)
 
 
     #time.sleep(5)
@@ -124,6 +128,25 @@ def parse(url):
                 """
                 body = driver.find_element(By.XPATH, "//body")
 
+
+                round = driver.find_element(By.CSS_SELECTOR, 'cdk-virtual-scroll-viewport')
+                scroll_position_previous = -1
+                scroll_position = 0
+                count = 1
+                while scroll_position != scroll_position_previous:
+                    driver.execute_script("arguments[0].scrollTop = arguments[0].scrollTop + 3000;", round)
+                    time.sleep(2)
+                    scroll_position_previous = scroll_position
+                    scroll_position = driver.execute_script("return arguments[0].scrollTop;", round)
+                    time.sleep(2)
+                    print(f"round {id} scroll {count}: {scroll_position_previous} <> {scroll_position}")
+                    count += 1
+                round.text
+
+
+
+
+
                 # Find all div elements within the body
                 divs = body.find_elements(By.XPATH, "//div")
                 for div in divs:
@@ -145,13 +168,17 @@ def parse(url):
 
 
                     # print(t[:13], "----", "Authorization", "=== ", t[:13] == "Authorization")
+
+
                     if len(t) > 13 and t[:13] == "Authorization":
+                        divid = div.id
                         tokens = t.split("\n")
                         prev_ind = 0
                         for ind, val in enumerate(tokens):
                             if val[0] == "X":
                                 result[id].append(tokens[prev_ind:ind])
                                 prev_ind = ind
+
                 try:
                     with open('./csfail_history.pkl', 'wb') as f:
                         pickle.dump(result, f)

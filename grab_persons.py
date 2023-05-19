@@ -22,7 +22,7 @@ def parse(url):
     current_session_ids = []
     # Open the file in binary read mode
     try:
-        with open('./csfail_history.pkl', 'rb') as f:
+        with open('./csfail_persons.pkl', 'rb') as f:
             result = pickle.load(f)
     except:
         pass
@@ -180,7 +180,7 @@ def parse(url):
                                 prev_ind = ind
 
                 try:
-                    with open('./csfail_history.pkl', 'wb') as f:
+                    with open('./csfail_persons.pkl', 'wb') as f:
                         pickle.dump(result, f)
                 except:
                     pass

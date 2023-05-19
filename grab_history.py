@@ -82,7 +82,8 @@ def parse(url):
                     if val[0] == "#":
                         rec_dict = {}
                         rec_dict["Round"] = int(tokens[ind][1:])
-                        last_recorded_round = rec_dict["Round"]
+                        if last_recorded_round == 0:
+                            last_recorded_round = rec_dict["Round"]
                         rec_dict["Ratio"] = float(tokens[ind-4].replace(" ", "")[1:])
                         rec_dict["PersonsNumber"] = int(tokens[ind-3])
                         rec_dict["Bank"] = float(tokens[ind-2])
@@ -96,8 +97,8 @@ def parse(url):
                 try:
                     with open('./csfail_history.pkl', 'wb') as f:
                         pickle.dump(result, f)
-                        print(f"statistics history till round {last_recorded_round} recorded")
-                        time.sleep(1000)
+                        print(f"time: {datetime.now()}. Statistics history till round {last_recorded_round} recorded")
+                        time.sleep(300)
                 except:
                     pass
 
