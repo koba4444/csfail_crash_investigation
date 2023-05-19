@@ -19,14 +19,13 @@ def parse(url):
     :return: None
 
     """
-    column_names = ["Round", "Stake", "Win", "Ratio"]
+    column_names = ["Round", "Ratio"]
     result = pd.DataFrame(columns=column_names)
-    #result = pd.DataFrame()
     last_round_id = 3920000
     current_session_ids = []
     # Open the file in binary read mode
     try:
-        with open('./csfail_rounds.pkl', 'rb') as f:
+        with open('./csfail_ratios.pkl', 'rb') as f:
             result = pickle.load(f)
     except:
         pass
@@ -80,70 +79,47 @@ def parse(url):
         """
         while True:
             id += 1
-            driver.get(url+"/" + str(id))
+            driver.get("https://csfail.live/en/provably-fair/realization?game=crash&gameId=" + str(id))
             time.sleep(5)
+            id_input = driver.find_element(By.ID, "gameId")
+            id_input.clear()
+            id_input.send_keys(str(id))
+            check_button = driver.find_element(By.CLASS_NAME, "check__button")
+            check_button.click()
+            time.sleep(3)
+            rounds = driver.find_element(By.CLASS_NAME, "check__coeff")
 
-            count = 1
+            seconds = 1
+            while True:
+                try:
+                    t = rounds.text
+                    break
+                except:
+                    time.sleep(seconds)
+                    print(f"failed to get round info for {str(id)} seconds: {seconds}")
+                    seconds += 1
+                    if seconds > 3:
+                        stop_procedure = True
+                        break  # break while loop
 
-            rounds = driver.find_element(By.CSS_SELECTOR, 'cdk-virtual-scroll-viewport')
-            scroll_position_previous = -1
-            scroll_position = 0
-            count = 1
-            while scroll_position != scroll_position_previous:
 
+            rec_dict = {}
+            rec_dict["Round"] = int(id)
+            rec_dict["Ratio"] = float(t.replace(" ","")[1:])
 
-                seconds = 1
-                stop_procedure = False
-                while True:
-                    try:
-                        t = rounds.text
-                        break
-                    except:
-                        time.sleep(seconds)
-                        print(f"failed to get round info for {str(id)} seconds: {seconds}")
-                        seconds += 1
-                        if seconds > 3:
-                            stop_procedure = True
-                            break       # break while loop
-                driver.execute_script("arguments[0].scrollTop = arguments[0].scrollTop + 500;", rounds)
-                time.sleep(2)
-                scroll_position_previous = scroll_position
-                scroll_position = driver.execute_script("return arguments[0].scrollTop;", rounds)
-                time.sleep(2)
-                #print(f"round {id} scroll {count}: {scroll_position_previous} <> {scroll_position}")
-                count += 1
-                if stop_procedure:
-                    driver.quit()
-                    continue
-
-                tokens = t.split("\n")
-                prev_ind = 0
-                for ind, val in enumerate(tokens):
-                    if val == "+1":
-                        tokens.pop(ind)
-                for ind, val in enumerate(tokens):
-                    if val[0] == "X":
-                        rec_dict = {}
-                        rec_dict["Round"] = int(id)
-                        rec_dict["Stake"] = float(tokens[prev_ind])
-                        if ind - prev_ind == 2:
-                            rec_dict["Win"] = float(tokens[prev_ind + 1])
-                        else:
-                            rec_dict["Win"] = -float(tokens[prev_ind])
-                        rec_dict["Ratio"] = float(tokens[ind].replace(" ", "")[1:])
-                        result = result.append(rec_dict, ignore_index=True)
-                        prev_ind = ind+1
-                result.drop_duplicates(inplace=True)
+            result = result.append(rec_dict, ignore_index=True)
+            result.drop_duplicates(inplace=True)
             try:
-                with open('./csfail_rounds.pkl', 'wb') as f:
+                with open('./csfail_ratios.pkl', 'wb') as f:
                     pickle.dump(result, f)
-                    print(f"round {id} recorded")
+                    print(f"ratio {id} recorded")
             except:
                 pass
+    except:
+
     finally:
         driver.quit()
 
-        time.sleep(3)
 
 
 
