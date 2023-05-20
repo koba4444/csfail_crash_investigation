@@ -11,7 +11,8 @@ from selenium.webdriver.common.by import By
 import pickle
 import pandas as pd
 
-def parse(url):
+
+def grab_history(url):
     """
     parse screen values using Selenium library
     :param url: site url
@@ -98,8 +99,9 @@ def parse(url):
                     with open('./csfail_history.pkl', 'wb') as f:
                         pickle.dump(result, f)
                         print(f"time: {datetime.now()}. Statistics history till round {last_recorded_round} recorded")
-                        time.sleep(300)
-                        driver.refresh()
+                        #time.sleep(100)
+                        #driver.refresh()
+                        break
                 except:
                     pass
 
@@ -108,12 +110,9 @@ def parse(url):
 
 
 
-    time.sleep(10)
-
-
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     while True:
-        parse('https://csfail.live/en/crash/history')
+        grab_history('https://csfail.live/en/crash/history')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
