@@ -95,32 +95,7 @@ def grab_rounds_with_persons(url):
 
         driver = webdriver.Chrome(service=webdriver_service, options=options)
 
-        # Navigate to the website
-        """
-        driver.get("https://csfail.live/en/")
-        time.sleep(7)
-        login_button = driver.find_element(By.XPATH,
-                                           "/html/body/app-root/div/shell-wrapper/div/shell-header/div[3]/users-login-button/button")
-        login_button.click()
-        time.sleep(2)
-        google_button = driver.find_element(By.CLASS_NAME, "button_yandex")
-        google_button.click()
-        time.sleep(2)
-        email_input = driver.find_element(By.ID, "passp-field-login")
-        email_input.clear()
-        email_input.send_keys(auth_data.yandex_email)
-        time.sleep(2)
-        yandex_button = driver.find_element(By.CLASS_NAME, "Button2_type_submit")
-        yandex_button.click()
-        time.sleep(2)
 
-        pass_input = driver.find_element(By.ID, "passp-field-passwd")
-        pass_input.clear()
-        pass_input.send_keys(auth_data.yandex_password)
-        time.sleep(2)
-        yandex_button = driver.find_element(By.CLASS_NAME, "Button2_type_submit")
-        yandex_button.click()
-        """
         while True:
             previous_result_size = result.shape[0]
             id += 1
@@ -137,10 +112,10 @@ def grab_rounds_with_persons(url):
             while scroll_position != scroll_position_previous:
                 try:
                     driver.execute_script(f"arguments[0].scrollTop = arguments[0].scrollTop + {scroll_value};", rounds)
-                    time.sleep(0.1)
+                    time.sleep(0.01)
                     scroll_position_previous = scroll_position
                     scroll_position = driver.execute_script("return arguments[0].scrollTop;", rounds)
-                    time.sleep(0.1)
+                    time.sleep(0.01)
                     scroll_value = 500
                     bets = rounds.find_elements(By.CLASS_NAME, 'crash-bet_round')
                     for bet_ind, bet_val in enumerate(bets):
@@ -161,6 +136,7 @@ def grab_rounds_with_persons(url):
                     continue
 
             try:
+
                 with open('./csfail_rounds_w_persons.pkl', 'wb') as f:
 
                     pickle.dump(result, f)

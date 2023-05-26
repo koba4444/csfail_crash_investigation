@@ -50,7 +50,7 @@ def grab_history(url):
 
     # Navigate to the website
     driver.get(url)
-    time.sleep(5)
+    time.sleep(7)
 
 
     try:
